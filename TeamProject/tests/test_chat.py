@@ -2,6 +2,7 @@ import json
 from flask import Flask
 from TeamProject.main import app
 from TeamProject.initial import initial
+from TeamProject.module.verifyUser import verify_code
 import pytest
 import coverage
 
@@ -76,6 +77,20 @@ def test_register(client):
     assert json_data['state'] == 'succeed'
 
 
+def test_register_id_exist(client):
+    response = client.post('/register', data={'id': '123', 'username': 'testuser', 'name': 'Test User', 'password': 'pass123', 'gender': 'Male', 'major': 'Computer Science', 'email': 'test@example.com', 'email_password': 'pass123'})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert 'state' in json_data
+    assert json_data['state'] == 'id exists or name exist'
+
+
+def test_register_invalid_info(client):
+    response = client.post('/register', data={'id': '123', 'name': 'Test User', 'password': 'pass123', 'gender': 'Male', 'major': 'Computer Science', 'email': 'test@example.com', 'email_password': 'pass123'})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert 'state' in json_data
+    assert json_data['state'] == 'invalid information'
 
 
 
@@ -96,6 +111,23 @@ def test_login(client):
     assert 'email_password' in json_data
 
 
+def test_login_no_user(client):
+    response = client.post('/login', data={'id': '1234', 'password': 'pass123'})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert 'state' in json_data
+    assert json_data['state'] == 'no such user'
+
+
+def test_login_wrong_password(client):
+    response = client.post('/login', data={'id': '123', 'password': 'pass125'})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert 'state' in json_data
+    assert json_data['state'] == 'wrong password'
+
+
+
 def test_login_by_email(client):
     response = client.post('/register_by_email', data={'email_address': '2292683883@qq.com'})
     assert response.status_code == 200
@@ -104,12 +136,45 @@ def test_login_by_email(client):
     assert json_data['state'] == 'send succeed'
 
 
+def test_login_by_email_wrong_address(client):
+    response = client.post('/register_by_email', data={'email_address': '22926838'})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert 'state' in json_data
+    assert json_data['state'] == 'email address don\'t exist'
+
+
 def test_verify_by_email(client):
     response = client.post('/login_by_verify_code', data={'email_address': '2292683883@qq.com', 'verify_code': '123456'})
     assert response.status_code == 200
     json_data = response.get_json()
     assert 'state' in json_data
     assert json_data['state'] == 'wrong code'
+
+
+
+def test_verify_by_email_succeed(client):
+
+    response = client.post('/login_by_verify_code', data={'email_address': '2292683883@qq.com', 'verify_code': verify_code['2292683883@qq.com']})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert 'state' in json_data
+    assert json_data['state'] == 'succeed'
+
+
+
+
+
+def test_verify_by_email_wrong_address(client):
+    response = client.post('/login_by_verify_code', data={'email_address': '2292683883@cq.com', 'verify_code': '123456'})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert 'state' in json_data
+    assert json_data['state'] == 'wrong email address'
+
+
+
+
 
 
 def test_modify_st(client):
@@ -129,6 +194,27 @@ def test_modify_st(client):
     assert 'id' in json_data
     assert 'name' in json_data
     assert json_data['name'] == 'John Doe'
+
+
+
+def test_modify_st_wrong(client):
+    response = client.post('/modify', data={
+    'id': '123',
+    'username': 'johnny',
+    'name': 'John Doe',
+    'password': 'pass12',
+    'gender': 'male',
+    'major': 'Computer Science',
+    'email': 'john.doe@example.com',
+    'email_password': 'emailpassword123'})
+    assert response.status_code == 200
+    json_data = response.get_json()
+    assert 'state' in json_data
+    assert json_data['state'] == 'wrong password'
+
+
+
+
 
 
 

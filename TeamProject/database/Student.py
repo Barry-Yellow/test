@@ -71,9 +71,6 @@ def drop_student_table(db):
 
 
 def add_student(app, db, id, username, name, password, gender, major, email=None, email_password=None):
-    if not (username or id or name or password or gender or major):
-        print('info wrong')
-        return
     with app.app_context():
         new_student = Student(id=id, username=username, name=name,
                               password=password, major=major, gender=gender, email=email, email_password=email_password)

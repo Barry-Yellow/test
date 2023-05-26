@@ -3,6 +3,8 @@ from threading import Thread
 from TeamProject.module.receivedMail import receive_emails
 from TeamProject.module.verifyUser import init_mail
 
+from module.ai import init_ai
+
 
 def initial(app):
     init_db(app)

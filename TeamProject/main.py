@@ -272,7 +272,6 @@ def modify_st():
                         'gender': c.gender, 'email': c.email, 'email_password': c.email_password})
 
     except Exception as e:
-        print(e)
         return jsonify({'state': 'invalid information'})
 
 
@@ -281,7 +280,6 @@ def modify_st():
 if __name__ == '__main__':
     # 本地调试时使用
     # app.run()
-    print('xxxxxx')
     initial(app)
     app.run(host='0.0.0.0', port=5000)
     # init_db(app)

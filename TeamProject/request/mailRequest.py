@@ -7,7 +7,7 @@ from database.base import add_email_account
 mail = Blueprint('mail', __name__)
 
 
-@mail.route('/')
+@mail.route('/x')
 def hello():
     return '你好'
 

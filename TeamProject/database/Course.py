@@ -117,15 +117,6 @@ def add_course(db, id, name, course_id, class_name, class_name_en, kind, classes
 """
 
 
-def delete_course_by_id(db, course_id):
-    course = db.session.query(Course).get(course_id)
-    if course:
-        db.session.delete(course)
-        db.session.commit()
-    else:
-        print(f"Course with ID {course_id} not found.")
-
-
 """
 在数据库中查找所有的课程
 """

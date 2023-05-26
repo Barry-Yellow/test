@@ -8,6 +8,9 @@ ai = Blueprint('ai', __name__)
 
 @ai.route('/')
 def hello():
+    a=1
+    b=2
+    c=a+b
     return '你好'
 
 
